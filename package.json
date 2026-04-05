@@ -18,8 +18,13 @@
       }
     }
   },
+  "bin": {
+    "notion-to-email": "./dist/cli.js"
+  },
   "files": [
-    "dist"
+    "dist",
+    "skills",
+    ".claude-plugin"
   ],
   "scripts": {
     "build": "tsup",

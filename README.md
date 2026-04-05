@@ -17,6 +17,10 @@
 
 Give it a Notion page ID, get back email HTML that works in Gmail, Outlook, and Apple Mail.
 
+## Usage
+
+### As a library
+
 ```typescript
 import { renderFromNotion } from 'notion-to-email'
 
@@ -27,6 +31,34 @@ const { html, title } = await renderFromNotion({
 ```
 
 Pass `html` straight to SES, SendGrid, or Nodemailer.
+
+### As a CLI
+
+```bash
+# Output HTML to stdout
+npx notion-to-email <page-id> --token secret_xxx
+
+# Save to file
+npx notion-to-email <page-id> -o email.html
+
+# Use environment variable
+export NOTION_TOKEN=secret_xxx
+npx notion-to-email <page-id>
+
+# Notion URL works too
+npx notion-to-email https://notion.so/My-Page-abc123
+```
+
+### As a Claude Code skill
+
+Install the plugin, then use `/notion-to-email` in Claude Code:
+
+```
+claude plugin add https://github.com/Sangkwun/notion-to-email
+
+# Then in Claude Code:
+/notion-to-email <page-id>
+```
 
 ## No react-email needed
 
