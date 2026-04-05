@@ -3,5 +3,4 @@ dist/
 *.tsbuildinfo
 .DS_Store
 output.html
-package-lock.json
 test-*.ts
