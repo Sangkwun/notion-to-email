@@ -15,7 +15,7 @@
 
 ---
 
-Notion page ID 하나로 Gmail, Outlook, Apple Mail에서 깨지지 않는 이메일 HTML을 생성합니다.
+Give it a Notion page ID, get back email HTML that works in Gmail, Outlook, and Apple Mail.
 
 ```typescript
 import { renderFromNotion } from 'notion-to-email'
@@ -26,19 +26,19 @@ const { html, title } = await renderFromNotion({
 })
 ```
 
-`html`을 그대로 SES, SendGrid, Nodemailer에 넘기면 됩니다.
+Pass `html` straight to SES, SendGrid, or Nodemailer.
 
-## react-email 없이
+## No react-email needed
 
-react-email은 Notion 블록을 이메일로 바꿀 때 래핑 엘리먼트를 과도하게 생성합니다. 같은 페이지를 변환했을 때:
+react-email generates excessive wrapper elements when converting Notion blocks to email. For the same page:
 
 | | react-email | notion-to-email |
 |---|---|---|
-| 접근 방식 | JSX → `renderToStaticMarkup` | 직접 string 생성 |
-| 불필요한 래핑 | `<div>` 중첩 다수 | 없음 |
-| 런타임 의존성 | react, react-dom, @react-email/* | 없음 |
+| Approach | JSX → `renderToStaticMarkup` | Direct string generation |
+| Unnecessary wrappers | Many nested `<div>`s | None |
+| Runtime deps | react, react-dom, @react-email/* | None |
 
-## 지원 블록
+## Supported Blocks
 
 Paragraph, Heading 1–4, Bulleted/Numbered List, To-Do, Toggle, Quote, Callout, Divider, Code, Equation, Image, Video (YouTube), File, Bookmark, Table, Column List, Child Page, Child Database, Synced Block, Link to Page, Table of Contents
 
@@ -51,7 +51,7 @@ await renderFromNotion({
   pageId: 'your-page-id',
   token: 'your-token',
   options: {
-    // Private 페이지 이미지를 자체 CDN으로 프록시
+    // Proxy private page images through your own CDN
     resolveImageUrl: (url, context) => {
       return `https://your-cdn.com/proxy?url=${encodeURIComponent(url)}`
     },
@@ -61,7 +61,7 @@ await renderFromNotion({
       notionButtonLabel: 'Open in Notion',
     },
 
-    // HTML string 또는 false
+    // HTML string or false to disable
     footer: '<p>Sent via My App</p>',
 
     // 'hide' | 'placeholder' | ((blockType) => string)
@@ -72,7 +72,7 @@ await renderFromNotion({
 
 ### Pre-fetched data
 
-이미지 업로드 등 fetch 과정을 직접 제어해야 할 때:
+When you need control over the fetch process (e.g., uploading images to your own storage before rendering):
 
 ```typescript
 import { renderNotionEmail } from 'notion-to-email'
@@ -87,7 +87,7 @@ const html = renderNotionEmail(page, children, extraData, options)
 npm install notion-to-email @notionhq/client
 ```
 
-`@notionhq/client`는 peer dependency입니다. Node 18+.
+`@notionhq/client` is a peer dependency. Requires Node 18+.
 
 ## Used By
 
