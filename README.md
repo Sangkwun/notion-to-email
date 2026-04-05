@@ -2,6 +2,10 @@
 
 Convert Notion pages to email-compatible HTML.
 
+<p align="center">
+  <img src="assets/preview.png" alt="notion-to-email preview" width="700" />
+</p>
+
 ## Features
 
 - Renders Notion pages as email-safe HTML (table-based layouts, inline styles)
