@@ -2,8 +2,6 @@
 
 **Write in Notion. Send as email.**
 
-Lightweight library that converts Notion pages into email-compatible HTML — table-based layouts, inline styles, zero runtime dependencies.
-
 <p align="center">
   <img src="assets/preview.png" alt="notion-to-email preview" width="700" />
 </p>
@@ -17,19 +15,7 @@ Lightweight library that converts Notion pages into email-compatible HTML — ta
 
 ---
 
-## Why?
-
-Notion is a great writing tool. But turning a Notion page into an email that renders correctly across Gmail, Outlook, and Apple Mail is painful. This library handles the hard parts:
-
-- **Email-safe HTML** — `<table>` layouts, inline styles, no CSS classes
-- **23+ block types** — headings, lists, callouts, code blocks, images, tables, bookmarks, and more
-- **Just 3 lines of code** — provide a page ID and token, get back a complete HTML email
-
-## Quick Start
-
-```bash
-npm install notion-to-email @notionhq/client
-```
+Notion page ID 하나로 Gmail, Outlook, Apple Mail에서 깨지지 않는 이메일 HTML을 생성합니다.
 
 ```typescript
 import { renderFromNotion } from 'notion-to-email'
@@ -38,84 +24,77 @@ const { html, title } = await renderFromNotion({
   pageId: 'your-page-id',
   token: 'your-notion-token',
 })
-
-// html → ready-to-send email HTML
-// title → page title for the subject line
 ```
 
-That's it. The library fetches the page, resolves images, and returns a complete `<!DOCTYPE html>` document.
+`html`을 그대로 SES, SendGrid, Nodemailer에 넘기면 됩니다.
+
+## react-email 없이
+
+react-email은 Notion 블록을 이메일로 바꿀 때 래핑 엘리먼트를 과도하게 생성합니다. 같은 페이지를 변환했을 때:
+
+| | react-email | notion-to-email |
+|---|---|---|
+| 접근 방식 | JSX → `renderToStaticMarkup` | 직접 string 생성 |
+| 불필요한 래핑 | `<div>` 중첩 다수 | 없음 |
+| 런타임 의존성 | react, react-dom, @react-email/* | 없음 |
+
+## 지원 블록
+
+Paragraph, Heading 1–4, Bulleted/Numbered List, To-Do, Toggle, Quote, Callout, Divider, Code, Equation, Image, Video (YouTube), File, Bookmark, Table, Column List, Child Page, Child Database, Synced Block, Link to Page, Table of Contents
+
+Rich text: **bold**, *italic*, ~~strikethrough~~, `code`, underline, colors, links, mentions
 
 ## Options
 
 ```typescript
-const result = await renderFromNotion({
+await renderFromNotion({
   pageId: 'your-page-id',
   token: 'your-token',
   options: {
-    // Custom image URL resolver (useful for private pages)
+    // Private 페이지 이미지를 자체 CDN으로 프록시
     resolveImageUrl: (url, context) => {
-      // context: { blockId, blockType, pageId, isPublicPage, usage }
       return `https://your-cdn.com/proxy?url=${encodeURIComponent(url)}`
     },
 
-    // Header
     header: {
       showNotionButton: true,
       notionButtonLabel: 'Open in Notion',
     },
 
-    // Footer (HTML string or false to disable)
+    // HTML string 또는 false
     footer: '<p>Sent via My App</p>',
 
-    // Unsupported block handling
-    onUnsupportedBlock: 'placeholder', // 'hide' | 'placeholder' | ((blockType) => string)
+    // 'hide' | 'placeholder' | ((blockType) => string)
+    onUnsupportedBlock: 'placeholder',
   },
 })
 ```
 
-### Advanced: Pre-fetched Data
+### Pre-fetched data
 
-If you need control over the fetch process (e.g., uploading images to your own storage before rendering):
+이미지 업로드 등 fetch 과정을 직접 제어해야 할 때:
 
 ```typescript
 import { renderNotionEmail } from 'notion-to-email'
 import type { ExtraData } from 'notion-to-email'
 
-// Fetch and process data yourself
 const html = renderNotionEmail(page, children, extraData, options)
 ```
 
-## Supported Blocks
+## Install
 
-| Block | | Block | |
-|---|---|---|---|
-| Paragraph | ✅ | Image | ✅ |
-| Heading 1–4 | ✅ | Video (YouTube) | ✅ |
-| Bulleted List | ✅ | File | ✅ |
-| Numbered List | ✅ | Bookmark | ✅ |
-| To-Do | ✅ | Table | ✅ |
-| Toggle | ✅ | Column List | ✅ |
-| Quote | ✅ | Child Page | ✅ |
-| Callout | ✅ | Child Database | ✅ |
-| Divider | ✅ | Synced Block | ✅ |
-| Code | ✅ | Link to Page | ✅ |
-| Equation | ✅ | Table of Contents | ✅ |
+```bash
+npm install notion-to-email @notionhq/client
+```
 
-Rich text annotations are fully supported: **bold**, *italic*, ~~strikethrough~~, `code`, <u>underline</u>, colors, and links.
-
-## How It Works
-
-1. Fetches the Notion page and all child blocks via the Notion API
-2. Collects additional data (bookmark OG metadata, database info, nested children)
-3. Renders each block to email-safe HTML using a lightweight string-based builder (~33KB, no react-email dependency)
-4. Returns a complete HTML document ready to send
+`@notionhq/client`는 peer dependency입니다. Node 18+.
 
 ## Used By
 
 <a href="https://notionto.email">
-  <img src="https://notionto.email/images/notion-to-email.png" alt="notionto.email" width="32" height="32" />
+  <img src="https://notionto.email/images/notion-to-email.png" alt="notionto.email" width="24" height="24" style="vertical-align: middle" />
   <strong>notionto.email</strong>
-</a> — Convert Notion pages to beautiful emails in one click.
+</a>
 
 ## License
 
