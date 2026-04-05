@@ -37,6 +37,11 @@
     "typescript": "^5.5.0",
     "vitest": "^3.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sangkwun/notion-to-email.git"
+  },
+  "homepage": "https://github.com/Sangkwun/notion-to-email#readme",
   "license": "MIT",
   "keywords": [
     "notion",
