@@ -35,7 +35,7 @@ export function renderImage(
     blockId: block.id,
     blockType: "image",
     pageId: ctx.page.id,
-    isPublicPage: !!ctx.page.public_url,
+    isPublicPage: ctx.isPublicPage,
     usage: "image",
   })
 

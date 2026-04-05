@@ -30,7 +30,7 @@ export function renderCoverImage(
       blockId: ctx.page.id,
       blockType: "cover",
       pageId: ctx.page.id,
-      isPublicPage: !!ctx.page.public_url,
+      isPublicPage: ctx.isPublicPage,
       usage: "cover",
     })
     return img({

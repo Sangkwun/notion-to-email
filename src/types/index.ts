@@ -64,6 +64,8 @@ export interface RenderResult {
   icon: string | null
   /** Notion page URL */
   url: string
+  /** Whether the page is publicly shared */
+  isPublicPage: boolean
 }
 
 /** Bookmark metadata (subset of OG data) */

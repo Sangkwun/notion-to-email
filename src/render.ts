@@ -43,6 +43,7 @@ export function renderNotionEmail(
     },
     resolveImageUrl: createResolveImageUrl(page, options?.resolveImageUrl),
     assetBaseUrl: DEFAULT_ASSET_BASE_URL,
+    isPublicPage: !!page.public_url,
   }
 
   return renderPage(page, children, ctx, options)

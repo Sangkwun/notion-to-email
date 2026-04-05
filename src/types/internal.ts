@@ -23,6 +23,7 @@ export interface RenderContext {
   options: Required<Pick<RenderOptions, "onUnsupportedBlock">> & RenderOptions
   resolveImageUrl: (url: string, context: import("./index").ImageContext) => string
   assetBaseUrl: string
+  isPublicPage: boolean
 }
 
 // --- Extra data types ---

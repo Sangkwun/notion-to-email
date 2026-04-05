@@ -49,7 +49,7 @@ export async function fetchAndRender(
   const title = getPageTitle(page)
   const icon = extractPageIcon(page)
 
-  return { html, title, icon, url: page.url }
+  return { html, title, icon, url: page.url, isPublicPage: !!page.public_url }
 }
 
 async function fetchAllChildren(

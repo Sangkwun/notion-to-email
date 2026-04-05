@@ -44,7 +44,12 @@ async function main() {
   // Extract page ID from URL if needed
   const pageId = extractPageId(input)
 
-  const { html, title } = await renderFromNotion({ pageId, token })
+  const { html, title, isPublicPage } = await renderFromNotion({ pageId, token })
+
+  if (!isPublicPage) {
+    console.error("Warning: This page is not public. Images may not display correctly in the email.")
+    console.error("  → Share the page publicly in Notion, or use the library API with resolveImageUrl.")
+  }
 
   if (values.output) {
     await writeFile(values.output, html, "utf-8")

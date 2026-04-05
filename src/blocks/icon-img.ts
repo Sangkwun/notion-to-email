@@ -76,7 +76,7 @@ export function renderIconImg(
       blockId: block?.id ?? ctx.page.id,
       blockType: "icon",
       pageId: ctx.page.id,
-      isPublicPage: !!ctx.page.public_url,
+      isPublicPage: ctx.isPublicPage,
       usage: "icon",
     })
     return img({
