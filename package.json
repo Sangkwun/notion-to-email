@@ -54,7 +54,11 @@
     "email",
     "html",
     "converter",
-    "notion-api"
+    "notion-api",
+    "email-html",
+    "newsletter",
+    "react-email",
+    "email-template"
   ],
   "engines": {
     "node": ">=18"
