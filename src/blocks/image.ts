@@ -8,6 +8,10 @@ export function renderImage(
   block: ImageBlockObjectResponse,
   ctx: RenderContext,
 ): string {
+  // Skip empty image placeholders (no image selected in Notion)
+  if (block.image.type === "external" && !block.image.external.url) return ""
+  if (block.image.type === "file" && !block.image.file?.url) return ""
+
   if (block.image.type === "external") {
     if (block.image.external.url.includes(".svg")) {
       return renderNotSupported(NotSupportedType.SVG_IMAGE, ctx)
