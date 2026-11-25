@@ -99,5 +99,11 @@ export interface CustomEmojiIcon {
   custom_emoji: { id: string; name?: string; url?: string }
 }
 
-export type Icon = EmojiIcon | ExternalIcon | FileIcon | CustomEmojiIcon | null
+/** Native Notion icon. Color defaults to gray. */
+export interface NotionIcon {
+  type: "icon"
+  icon: { name: string; color?: string }
+}
+
+export type Icon = EmojiIcon | ExternalIcon | FileIcon | CustomEmojiIcon | NotionIcon | null
 export type Cover = ExternalIcon | FileIcon | null

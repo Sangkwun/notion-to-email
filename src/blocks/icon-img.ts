@@ -1,6 +1,7 @@
 import type { BlockObjectResponse, PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
 import { el, img, text } from "../html"
 import type { RenderContext } from "../types/internal"
+import { notionIconUrl } from "../utils"
 
 const ICON_FILENAME_REGEX = /[^/]+(?=\.[\w]+?$)/
 
@@ -13,7 +14,7 @@ interface IconOptions {
 
 type NotionIcon = PageObjectResponse["icon"]
 
-/** Accepts Notion's icon type (emoji | external | file | custom_emoji | null) */
+/** Accepts Notion's icon type (emoji | external | file | custom_emoji | icon | null) */
 export function renderIconImg(
   icon: NotionIcon,
   ctx: RenderContext,
@@ -24,12 +25,17 @@ export function renderIconImg(
   const { externalIconSize, emojiIconSize, fileIconSize, block } = options
   const assetBaseUrl = ctx.assetBaseUrl
 
-  if (icon.type === "external") {
-    let src = icon.external.url
-    if (src.includes("https://www.notion.so/icons/")) {
-      const match = src.match(ICON_FILENAME_REGEX)
-      if (match && match.length > 0) {
-        src = `${assetBaseUrl}/icons/${match[0]}.png`
+  if (icon.type === "external" || icon.type === "icon") {
+    let src: string
+    if (icon.type === "icon") {
+      src = notionIconUrl(assetBaseUrl, icon.icon)
+    } else {
+      src = icon.external.url
+      if (src.includes("https://www.notion.so/icons/")) {
+        const match = src.match(ICON_FILENAME_REGEX)
+        if (match && match.length > 0) {
+          src = `${assetBaseUrl}/icons/${match[0]}.png`
+        }
       }
     }
     return img({

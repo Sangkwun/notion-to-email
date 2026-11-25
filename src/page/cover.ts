@@ -50,7 +50,7 @@ export function renderCoverImage(
 
 function getIconOverlapSize(icon: NotionIcon): number {
   if (!icon) return 0
-  if (icon.type === "external") return 0.75
+  if (icon.type === "external" || icon.type === "icon") return 0.75
   if (icon.type === "emoji" || icon.type === "custom_emoji") return 1.4625
   if (icon.type === "file") return 2.331
   return 0

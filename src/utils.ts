@@ -8,6 +8,7 @@ import {
   isBackgroundColor,
   ColorMap,
   CalloutBackgroundColorMap,
+  DEFAULT_ASSET_BASE_URL,
 } from "./constants"
 
 /** Extract page title as RichTextItemResponse array */
@@ -27,6 +28,17 @@ export function getPageTitle(page: PageObjectResponse): string {
   return getTitleFromPage(page).map((rt) => rt.plain_text).join("") || "Untitled"
 }
 
+/**
+ * PNG copy of a native Notion icon ({ name, color }).
+ * Uses the file names of Notion's icon CDN (https://www.notion.so/icons/<name>_<color>.svg).
+ */
+export function notionIconUrl(
+  assetBaseUrl: string,
+  icon: { name: string; color?: string | null },
+): string {
+  return `${assetBaseUrl}/icons/${encodeURIComponent(icon.name)}_${encodeURIComponent(icon.color || "gray")}.png`
+}
+
 /** Extract page icon as emoji string or URL */
 export function extractPageIcon(page: PageObjectResponse): string | null {
   const icon = page.icon
@@ -34,6 +46,7 @@ export function extractPageIcon(page: PageObjectResponse): string | null {
   if (icon.type === "emoji") return icon.emoji
   if (icon.type === "external") return icon.external.url
   if (icon.type === "file") return icon.file.url
+  if (icon.type === "icon") return notionIconUrl(DEFAULT_ASSET_BASE_URL, icon.icon)
   return null
 }
 

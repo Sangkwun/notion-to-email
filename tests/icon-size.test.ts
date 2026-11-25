@@ -75,6 +75,11 @@ const results = [
     color: "default",
     icon: { type: "file", file: { url: "https://example.com/file-icon.png", expiry_time: "2030-01-01T00:00:00.000Z" } },
   }),
+  block("callout-4", "callout", {
+    rich_text: [rt("native icon")],
+    color: "default",
+    icon: { type: "icon", icon: { name: "light-bulb", color: "yellow" } },
+  }),
 ]
 
 const children = {
@@ -125,6 +130,7 @@ describe("fixed-size icons", () => {
       "callout-icon.png": 1,
       "custom-emoji.png": 1,
       "file-icon.png": 1,
+      "light-bulb_yellow.png": 1,
     }
     for (const [name, count] of Object.entries(expected)) {
       expect(fixedImgs.filter(({ tag }) => tag.includes(name)), name).toHaveLength(count)
