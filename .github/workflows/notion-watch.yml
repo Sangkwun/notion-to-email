@@ -1,0 +1,49 @@
+name: Notion watch
+
+# Renders the reference Notion page through the real API every week and fails
+# when the email loses content. See scripts/notion-watch.mjs.
+on:
+  schedule:
+    - cron: "0 0 * * 1" # Mondays 09:00 KST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Watch with the newest Notion SDK, the one a new install gets
+      - run: npm install --no-save @notionhq/client@latest
+
+      - run: npm run typecheck
+
+      - run: npm run build
+
+      - run: node scripts/notion-watch.mjs
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          # "notion-to-email watch reference" under TEST Page, built by scripts/reference-page.mjs
+          REFERENCE_PAGE_ID: 423b6aeecf9f81709fe4db339d83d526
+
+  # GitHub disables scheduled workflows after 60 days without repository
+  # activity. Re-enabling on every scheduled run keeps the watch alive.
+  keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/notion-watch.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}
