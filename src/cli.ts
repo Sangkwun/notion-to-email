@@ -63,8 +63,8 @@ function extractPageId(input: string): string {
   try {
     const url = new URL(input)
     const path = url.pathname.replace(/\/+$/, "").split("/").pop() || ""
-    const match = path.match(/([a-f0-9]{32})$/i)
-    if (match) return match[1].toLowerCase()
+    const match = path.match(/[a-f0-9]{32}$/i)
+    if (match) return match[0].toLowerCase()
   } catch {
     // Not a URL, treat as raw page ID
   }
