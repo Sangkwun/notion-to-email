@@ -9,6 +9,7 @@ import type { RenderFromNotionOptions, RenderResult } from "./types/index"
 import type { ExtraData } from "./types/internal"
 import { renderNotionEmail } from "./render"
 import { getPageTitle, extractPageIcon } from "./utils"
+import { meetingNotesOf } from "./blocks/meeting-notes"
 
 /** Fetch a Notion page and all supplementary data, then render to HTML */
 export async function fetchAndRender(
@@ -91,9 +92,12 @@ async function collectExtraData(
   const tasks: Promise<void>[] = []
 
   for (const block of blocks) {
-    // Blocks with children: paragraph, list items, todo, toggle, quote, callout, synced_block, column_list
+    const isMeetingNotes = block.type === "transcription" || block.type === "meeting_notes"
+
+    // Blocks with children: paragraph, list items, todo, toggle, quote, callout, synced_block, column_list, tab
     // Skip child_page and child_database — they store page/database info, not block children
-    if (block.has_children && block.type !== "child_page" && block.type !== "child_database") {
+    // Skip meeting notes — only their summary and notes sections are fetched below, not the transcript
+    if (block.has_children && block.type !== "child_page" && block.type !== "child_database" && !isMeetingNotes) {
       tasks.push(
         (async () => {
           const children = await fetchAllChildren(notion, block.id)
@@ -104,6 +108,26 @@ async function collectExtraData(
           await collectExtraData(notion, childBlocks, extraData, depth + 1)
         })(),
       )
+    }
+
+    // Meeting notes: fetch the summary and notes sections by the IDs the block points to
+    if (block.type === "transcription" || block.type === "meeting_notes") {
+      const sections = meetingNotesOf(block).children
+      for (const sectionId of [sections?.summary_block_id, sections?.notes_block_id]) {
+        if (!sectionId) continue
+        tasks.push(
+          (async () => {
+            try {
+              const children = await fetchAllChildren(notion, sectionId)
+              extraData[sectionId] = { type: "page_children", info: children }
+              const childBlocks = children.results.filter(isFullBlock) as BlockObjectResponse[]
+              await collectExtraData(notion, childBlocks, extraData, depth + 1)
+            } catch {
+              // Ignore - will render a link to Notion
+            }
+          })(),
+        )
+      }
     }
 
     // Bookmark: fetch OG data

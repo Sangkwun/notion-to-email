@@ -81,6 +81,7 @@ const results = [
   block("audio-1", "audio", { type: "external", external: { url: "https://example.com/a.mp3" }, caption: [] }),
   block("link-preview-1", "link_preview", { url: "https://github.com/a/b/pull/1" }),
   block("tab-1", "tab", {}, true),
+  block("meeting-1", "meeting_notes", { title: [rt("meeting")] }),
   block("callout-4", "callout", {
     rich_text: [rt("native icon")],
     color: "default",
@@ -142,7 +143,7 @@ describe("fixed-size icons", () => {
       "warning.png": 1,
       "file_black.png": 1,
       "table.png": 1,
-      "notion-logo.png": 1,
+      "notion-logo.png": 2, // header button + meeting notes link card
       "favicon.ico": 1,
       "page-icon.png": 1,
       "callout-icon.png": 1,

@@ -42,6 +42,10 @@ export interface RenderOptions {
   labels?: {
     viewOnNotion?: string
     unsupportedBlock?: string
+    /** Heading of the AI summary in a meeting notes block (default: "Summary") */
+    meetingSummary?: string
+    /** Heading of the notes in a meeting notes block (default: "Notes") */
+    meetingNotes?: string
   }
 }
 

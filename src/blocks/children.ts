@@ -21,6 +21,7 @@ import { renderChildDatabase } from "./child-database"
 import { renderVideo } from "./video"
 import { renderEmbed, renderPdf, renderAudio } from "./media-link"
 import { renderTab } from "./tab"
+import { renderMeetingNotes } from "./meeting-notes"
 import { renderFile } from "./file"
 import { renderSyncedBlock } from "./synced-block"
 import { renderLinkToPage } from "./link-to-page"
@@ -117,6 +118,8 @@ export function renderChildrenResults(
         parts.push(renderAudio(block, ctx))
       } else if (block.type === "tab") {
         parts.push(renderTab(block, ctx, renderChildrenResults))
+      } else if (block.type === "transcription" || block.type === "meeting_notes") {
+        parts.push(renderMeetingNotes(block, ctx, renderChildrenResults))
       } else if (block.type === "file") {
         parts.push(renderFile(block, ctx.assetBaseUrl))
       } else if (block.type === "synced_block") {
