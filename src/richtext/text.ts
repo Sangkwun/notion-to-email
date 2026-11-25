@@ -1,9 +1,9 @@
 import type { TextRichTextItemResponse, RichTextItemResponse } from "@notionhq/client/build/src/api-endpoints"
-import { el, text, a, br, frag } from "../html"
+import { el, text, br, frag } from "../html"
 import { Color } from "../constants"
 import { buildRichTextStyle } from "./style"
 import { hasAnnotations } from "../utils"
-import { defaultAnnotations } from "./shared"
+import { defaultAnnotations, inlineLink } from "./shared"
 
 /**
  * Preserves whitespace in text by converting spaces to non-breaking spaces where needed.
@@ -46,17 +46,7 @@ export function renderTextRichText(
   const s = buildRichTextStyle(annotations, blockColor)
 
   if (href) {
-    return a(
-      {
-        href,
-        style: {
-          borderBottom: "0.5px solid rgba(55,53,47,.4)",
-          color: "inherit",
-          opacity: 0.7,
-        },
-      },
-      el("span", { style: s }, renderTextWithLineBreaks(content)),
-    )
+    return inlineLink(href, el("span", { style: s }, renderTextWithLineBreaks(content)))
   }
 
   return el("span", { style: s }, renderTextWithLineBreaks(content))
