@@ -106,6 +106,8 @@ await renderFromNotion({
     labels: {
       viewOnNotion: 'View on Notion',
       unsupportedBlock: 'View on Notion',
+      meetingSummary: 'Summary',         // AI meeting notes headings
+      meetingNotes: 'Notes',
     },
   },
 })
@@ -137,7 +139,8 @@ const html = renderNotionEmail(page, children, extraData, options)
 | Code | ✅ |
 | Equation | ✅ |
 | Image | ✅ |
-| Video (YouTube) | ✅ |
+| Video | ✅ YouTube (watch, youtu.be, Shorts) as a thumbnail; other videos as a link card |
+| Embed / PDF / Audio / Link preview | ✅ as a link card |
 | File | ✅ |
 | Bookmark | ✅ |
 | Table | ✅ |
@@ -147,8 +150,12 @@ const html = renderNotionEmail(page, children, extraData, options)
 | Synced Block | ✅ |
 | Link to Page | ✅ |
 | Table of Contents | ✅ |
+| Tabs | ✅ each tab's label and content |
+| AI meeting notes | ✅ summary and notes (not the transcript) |
 
-Rich text: **bold**, *italic*, ~~strikethrough~~, `code`, underline, colors, links, mentions
+Rich text: **bold**, *italic*, ~~strikethrough~~, `code`, underline, colors, links, inline equations, mentions (user, date, page, database, link, custom emoji)
+
+Icons: emoji, uploaded or external images, custom emoji, and Notion's built-in icons
 
 ## Used By
 
