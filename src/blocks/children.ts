@@ -20,6 +20,7 @@ import { renderChildPage } from "./child-page"
 import { renderChildDatabase } from "./child-database"
 import { renderVideo } from "./video"
 import { renderEmbed, renderPdf, renderAudio } from "./media-link"
+import { renderTab } from "./tab"
 import { renderFile } from "./file"
 import { renderSyncedBlock } from "./synced-block"
 import { renderLinkToPage } from "./link-to-page"
@@ -114,6 +115,8 @@ export function renderChildrenResults(
         parts.push(renderPdf(block, ctx))
       } else if (block.type === "audio") {
         parts.push(renderAudio(block, ctx))
+      } else if (block.type === "tab") {
+        parts.push(renderTab(block, ctx, renderChildrenResults))
       } else if (block.type === "file") {
         parts.push(renderFile(block, ctx.assetBaseUrl))
       } else if (block.type === "synced_block") {

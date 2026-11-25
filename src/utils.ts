@@ -3,6 +3,7 @@ import type {
   RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints"
 import type { StyleProps } from "./types/style"
+import type { RenderContext } from "./types/internal"
 import {
   Color,
   isBackgroundColor,
@@ -65,4 +66,10 @@ export function hasAnnotations(
   richtext: Record<string, unknown>,
 ): richtext is Record<string, unknown> & { annotations: import("@notionhq/client/build/src/api-endpoints").RichTextItemResponse["annotations"] } {
   return "annotations" in richtext
+}
+
+/** Fetched children of a block (extraData[id] of type page_children), or undefined */
+export function pageChildren(ctx: RenderContext, id: string) {
+  const info = ctx.extraData[id]
+  return info?.type === "page_children" ? info.info.results : undefined
 }

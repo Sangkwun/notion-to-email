@@ -80,6 +80,7 @@ const results = [
   block("pdf-1", "pdf", { type: "external", external: { url: "https://example.com/a.pdf" }, caption: [] }),
   block("audio-1", "audio", { type: "external", external: { url: "https://example.com/a.mp3" }, caption: [] }),
   block("link-preview-1", "link_preview", { url: "https://github.com/a/b/pull/1" }),
+  block("tab-1", "tab", {}, true),
   block("callout-4", "callout", {
     rich_text: [rt("native icon")],
     color: "default",
@@ -97,6 +98,18 @@ const children = {
 } as unknown as ListBlockChildrenResponse
 
 const extraData = {
+  "tab-1": {
+    type: "page_children",
+    info: {
+      results: [
+        block("tab-1-item", "paragraph", {
+          rich_text: [rt("tab")],
+          color: "default",
+          icon: { type: "icon", icon: { name: "bookmark", color: "red" } },
+        }),
+      ],
+    },
+  },
   "bookmark-1": {
     type: "bookmark",
     info: { requestUrl: "https://example.com/post", ogTitle: "Post", favicon: "/favicon.ico" },
@@ -141,6 +154,7 @@ describe("fixed-size icons", () => {
       "document_gray.png": 1,
       "headphones_gray.png": 1,
       "link_gray.png": 1,
+      "bookmark_red.png": 1,
     }
     for (const [name, count] of Object.entries(expected)) {
       expect(fixedImgs.filter(({ tag }) => tag.includes(name)), name).toHaveLength(count)
