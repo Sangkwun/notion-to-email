@@ -75,6 +75,7 @@ const results = [
     color: "default",
     icon: { type: "file", file: { url: "https://example.com/file-icon.png", expiry_time: "2030-01-01T00:00:00.000Z" } },
   }),
+  block("video-1", "video", { type: "external", external: { url: "https://vimeo.com/1" }, caption: [] }),
   block("callout-4", "callout", {
     rich_text: [rt("native icon")],
     color: "default",
@@ -131,6 +132,7 @@ describe("fixed-size icons", () => {
       "custom-emoji.png": 1,
       "file-icon.png": 1,
       "light-bulb_yellow.png": 1,
+      "playback-play-button_gray.png": 1,
     }
     for (const [name, count] of Object.entries(expected)) {
       expect(fixedImgs.filter(({ tag }) => tag.includes(name)), name).toHaveLength(count)
