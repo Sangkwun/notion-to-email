@@ -28,6 +28,9 @@ jobs:
 
       - run: npm run typecheck
 
+      # Block types the API can't create (meeting notes, link mentions) are covered only by unit tests
+      - run: npm test
+
       - run: npm run build
 
       - run: node scripts/notion-watch.mjs
