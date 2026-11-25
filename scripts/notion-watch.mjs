@@ -6,10 +6,12 @@
 //   NOTION_TOKEN=... REFERENCE_PAGE_ID=... node scripts/notion-watch.mjs
 //
 // Fails when rendering throws, when any block falls back to the "not supported"
-// placeholder, or when expected text or HTML is missing from the email.
+// placeholder, or when an expected line or HTML string is missing from the email
+// (see scripts/watch-check.mjs).
 
 import { renderFromNotion } from "../dist/index.js"
-import { EXPECTED_HTML, EXPECTED_TEXT } from "./reference-page.mjs"
+import { EXPECTED_HTML, EXPECTED_LINES } from "./reference-page.mjs"
+import { findProblems } from "./watch-check.mjs"
 
 const token = process.env.NOTION_TOKEN
 const pageId = process.env.REFERENCE_PAGE_ID
@@ -30,22 +32,10 @@ const { html } = await renderFromNotion({
   },
 })
 
-const ENTITIES = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'" }
-const visibleText = html
-  .replace(/<[^>]+>/g, "")
-  .replace(/&(amp|lt|gt|quot|#39);/g, (entity) => ENTITIES[entity])
-  .replace(/\s+/g, " ")
-
-const missingText = EXPECTED_TEXT.filter((expected) =>
-  typeof expected === "string" ? !visibleText.includes(expected) : !expected.test(visibleText),
-)
-const missingHtml = EXPECTED_HTML.filter((expected) => !html.includes(expected))
-
-const problems = [
-  ...placeholders.map((blockType) => `placeholder for block type: ${blockType}`),
-  ...missingText.map((expected) => `missing text: ${expected}`),
-  ...missingHtml.map((expected) => `missing HTML: ${expected}`),
-]
+const problems = findProblems(html, placeholders, {
+  expectedLines: EXPECTED_LINES,
+  expectedHtml: EXPECTED_HTML,
+})
 
 if (problems.length > 0) {
   console.error(`The reference page lost content in the email (${problems.length}):`)
@@ -54,5 +44,5 @@ if (problems.length > 0) {
 }
 
 console.log(
-  `OK: ${EXPECTED_TEXT.length} texts and ${EXPECTED_HTML.length} HTML strings found, no placeholders (${(html.length / 1024).toFixed(1)} KB)`,
+  `OK: ${EXPECTED_LINES.length} lines and ${EXPECTED_HTML.length} HTML strings found, no placeholders (${(html.length / 1024).toFixed(1)} KB)`,
 )

@@ -6,7 +6,7 @@
 //
 // The page holds every block, mention and icon shape the API can create.
 // Left out, with the reason:
-// - tab, meeting_notes / transcription, link_mention, link_preview, template_mention:
+// - meeting_notes / transcription, link_mention, link_preview, template_mention:
 //   the API can't create them.
 //   tests/fixtures/coverage.ts covers how they render.
 // - breadcrumb, template, unsupported: the renderer draws a placeholder for them on purpose.
@@ -14,69 +14,93 @@
 
 import { Client } from "@notionhq/client"
 
-const TITLE = "notion-to-email watch reference"
-const CHILD_PAGE = "WATCH child page"
-const DATABASE = "WATCH database"
+export const TITLE = "notion-to-email watch reference"
+export const CHILD_PAGE = "WATCH child page"
+export const DATABASE = "WATCH database"
+
+const YOUTUBE_ID = "jNQXAC9IVRw"
 
 /**
- * Text that must appear in the rendered email once tags are removed.
- * A block that renders to nothing, or a mention that loses its text, fails the watch.
+ * Lines of visible text the email must hold (scripts/watch-check.mjs), as [line, count?].
+ * Whole lines, so a block that renders nothing can't pass on another block's text.
+ * Counts cover text that two blocks draw: headings also appear in the table of contents,
+ * the child page title in the child page block and in the link to it.
  */
-export const EXPECTED_TEXT = [
-  "WATCH heading 1",
-  "WATCH heading 2",
-  "WATCH heading 3",
-  "WATCH heading 4",
+export const EXPECTED_LINES = [
+  ["WATCH heading 1", 2],
+  ["WATCH heading 2", 2],
+  ["WATCH heading 3", 2],
+  ["WATCH heading 4", 2],
   // A toggle heading links to Notion instead of drawing its content, on purpose
-  "WATCH toggle heading",
-  "WATCH paragraph bold italic code colored link",
-  "WATCH mention-page " + TITLE,
-  "WATCH mention-child-page " + CHILD_PAGE,
-  "WATCH mention-database " + DATABASE,
-  /WATCH mention-user @\S/,
-  /WATCH mention-date \S/,
-  "WATCH bullet",
-  "WATCH bullet child",
-  "WATCH numbered one",
-  "WATCH numbered two",
-  "WATCH numbered child",
-  "WATCH todo done",
-  "WATCH todo open",
-  "WATCH toggle",
-  "WATCH toggle child",
-  "WATCH quote",
-  "WATCH quote child",
-  "WATCH callout emoji",
-  "WATCH callout icon",
-  "WATCH callout child",
-  "WATCH code",
-  "WATCH code caption",
-  "WATCH table header",
-  "WATCH table cell",
-  "WATCH column one",
-  "WATCH column two",
-  "WATCH synced",
-  "WATCH bookmark caption",
-  "WATCH embed caption",
-  "WATCH image caption",
-  "WATCH video youtube watch",
-  "WATCH video youtu.be",
-  "WATCH video shorts",
-  "WATCH video vimeo",
-  "WATCH video file",
-  "WATCH pdf caption",
-  "WATCH audio caption",
-  CHILD_PAGE,
-  DATABASE,
+  ["WATCH toggle heading", 2],
+  ["WATCH paragraph bold italic code colored link e^{i\\pi}+1=0"],
+  ["WATCH mention-page " + TITLE],
+  ["WATCH mention-child-page " + CHILD_PAGE],
+  ["WATCH mention-database " + DATABASE],
+  // "User" is what the renderer shows when the API gives no name
+  [/^WATCH mention-user @(?!User$)\S/],
+  // 2026-01-15T09:00+09:00 is January 15 in UTC, January 14 west of it
+  [/^WATCH mention-date @January 1[45], 2026$/],
+  ["WATCH bullet"],
+  ["WATCH bullet child"],
+  ["WATCH numbered one"],
+  ["WATCH numbered two"],
+  ["WATCH numbered child"],
+  ["WATCH todo done"],
+  ["WATCH todo open"],
+  ["WATCH toggle"],
+  ["WATCH toggle child"],
+  ["WATCH quote"],
+  ["WATCH quote child"],
+  ["WATCH callout emoji"],
+  ["WATCH callout icon"],
+  ["WATCH callout child"],
+  ["const watch = 'WATCH code'"],
+  ["WATCH code caption"],
+  ["\\int_0^1 x^2\\,dx = \\frac{1}{3}"],
+  ["WATCH table header"],
+  ["WATCH table cell"],
+  ["WATCH column one"],
+  ["WATCH column two"],
+  ["WATCH synced"],
+  ["https://developers.notion.com/reference/block"],
+  ["WATCH bookmark caption"],
+  ["https://www.openstreetmap.org/export/embed.html?bbox=126.97,37.56,126.99,37.58"],
+  ["WATCH embed caption"],
+  ["WATCH image caption"],
+  ["WATCH video youtube watch"],
+  ["WATCH video youtu.be"],
+  ["WATCH video shorts"],
+  ["https://vimeo.com/76979871"],
+  ["WATCH video vimeo"],
+  ["https://download.samplelib.com/mp4/sample-5s.mp4"],
+  ["WATCH video file"],
+  ["https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"],
+  ["WATCH pdf caption"],
+  ["https://download.samplelib.com/mp3/sample-3s.mp3"],
+  ["WATCH audio caption"],
+  [CHILD_PAGE, 2],
+  [DATABASE],
+  ["WATCH tab one"],
+  ["WATCH tab one content"],
+  ["WATCH tab two"],
+  ["WATCH tab two content"],
 ]
 
-/** Strings that must appear in the rendered HTML itself */
+/** Strings the rendered HTML must hold, as [html, count?] */
 export const EXPECTED_HTML = [
-  // Native Notion icons on the page and on a callout
-  "/icons/pizza_blue.png",
-  "/icons/light-bulb_yellow.png",
+  // Native Notion icons: page, callout, second tab (the pdf card uses the same document icon)
+  ["/icons/pizza_blue.png"],
+  ["/icons/light-bulb_yellow.png"],
+  ["/icons/document_gray.png", 2],
+  // Thumbnails of the watch, youtu.be and Shorts videos
+  [`https://i.ytimg.com/vi/${YOUTUBE_ID}/`, 3],
+  // Cover and image block
+  ["Sangkwun/notion-to-email/main/assets/preview.png", 2],
+  // Bookmark card links the page
+  ['href="https://developers.notion.com/reference/block"'],
   // External file block links to the file
-  "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf?watch=file",
+  ["https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf?watch=file"],
 ]
 
 const rt = (content, annotations = {}, link = null) => ({
@@ -90,7 +114,7 @@ const block = (type, payload) => ({ type, [type]: payload })
 const p = (content, children) => block("paragraph", { rich_text: text(content), ...(children && { children }) })
 const media = (type, url, caption) => block(type, { type: "external", external: { url }, caption: text(caption) })
 
-function blocks({ pageId, childPageId, databaseId, userId }) {
+export function blocks({ pageId, childPageId, databaseId, userId }) {
   return [
     block("heading_1", { rich_text: text("WATCH heading 1") }),
     block("heading_2", { rich_text: text("WATCH heading 2") }),
@@ -170,15 +194,30 @@ function blocks({ pageId, childPageId, databaseId, userId }) {
     block("bookmark", { url: "https://developers.notion.com/reference/block", caption: text("WATCH bookmark caption") }),
     block("embed", { url: "https://www.openstreetmap.org/export/embed.html?bbox=126.97,37.56,126.99,37.58", caption: text("WATCH embed caption") }),
     media("image", "https://raw.githubusercontent.com/Sangkwun/notion-to-email/main/assets/preview.png", "WATCH image caption"),
-    media("video", "https://www.youtube.com/watch?v=jNQXAC9IVRw", "WATCH video youtube watch"),
-    media("video", "https://youtu.be/jNQXAC9IVRw", "WATCH video youtu.be"),
-    media("video", "https://www.youtube.com/shorts/jNQXAC9IVRw", "WATCH video shorts"),
+    media("video", `https://www.youtube.com/watch?v=${YOUTUBE_ID}`, "WATCH video youtube watch"),
+    media("video", `https://youtu.be/${YOUTUBE_ID}`, "WATCH video youtu.be"),
+    media("video", `https://www.youtube.com/shorts/${YOUTUBE_ID}`, "WATCH video shorts"),
     media("video", "https://vimeo.com/76979871", "WATCH video vimeo"),
     media("video", "https://download.samplelib.com/mp4/sample-5s.mp4", "WATCH video file"),
     media("pdf", "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", "WATCH pdf caption"),
     media("audio", "https://download.samplelib.com/mp3/sample-3s.mp3", "WATCH audio caption"),
     media("file", "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf?watch=file", "WATCH file caption"),
     block("link_to_page", { type: "page_id", page_id: childPageId }),
+    // Each tab is a paragraph child: its rich_text and icon are the label, its children the content
+    block("tab", {
+      children: [
+        block("paragraph", {
+          rich_text: text("WATCH tab one"),
+          icon: { type: "emoji", emoji: "📋" },
+          children: [p("WATCH tab one content")],
+        }),
+        block("paragraph", {
+          rich_text: text("WATCH tab two"),
+          icon: { type: "icon", icon: { name: "document", color: "gray" } },
+          children: [p("WATCH tab two content")],
+        }),
+      ],
+    }),
   ]
 }
 
