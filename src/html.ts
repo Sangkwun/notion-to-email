@@ -78,9 +78,14 @@ type Attrs = Record<string, string | number | boolean | StyleProps | undefined>
 
 const UNSAFE_URL_RE = /^\s*(javascript|data|vbscript)\s*:/i
 
-/** Sanitize URL: block unsafe schemes */
+/**
+ * Sanitize URL: block unsafe schemes.
+ * Browsers drop tabs and newlines anywhere in a URL and control characters before it
+ * (WHATWG URL parsing), so "java\tscript:" must be checked as "javascript:".
+ */
 function sanitizeUrl(url: string): string {
-  return UNSAFE_URL_RE.test(url) ? "" : url
+  const normalized = url.replace(/[\t\n\r]/g, "").replace(/^[\u0000-\u0020]+/, "")
+  return UNSAFE_URL_RE.test(normalized) ? "" : url
 }
 
 const URL_ATTRS = new Set(["href", "src", "action", "formaction", "poster"])

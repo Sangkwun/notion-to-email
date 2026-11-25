@@ -101,6 +101,13 @@ describe("el()", () => {
     expect(el("input", { disabled: false })).toBe("<input />")
   })
 
+  it("blocks unsafe URL schemes, including ones split by tabs, newlines or control characters", () => {
+    for (const href of ["javascript:alert(1)", " JavaScript:alert(1)", "java\tscript:alert(1)", "java\nscript:alert(1)", "\u0001javascript:alert(1)", "data:text/html,x", "vbscript:x"]) {
+      expect(el("a", { href }), JSON.stringify(href)).toBe('<a href=""></a>')
+    }
+    expect(el("a", { href: "https://example.com/a?b=javascript:1" })).toBe('<a href="https://example.com/a?b=javascript:1"></a>')
+  })
+
   it("escapes attribute values", () => {
     expect(el("a", { href: 'test"quote' })).toBe(
       '<a href="test&quot;quote"></a>',
