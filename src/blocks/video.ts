@@ -44,7 +44,9 @@ export function renderVideo(
         a(
           { href: block.video.external.url },
           img({
-            src: `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`,
+            // hqdefault exists for every video; maxresdefault is missing for videos below 720p
+            // and some Shorts, which left a broken image. 16:9 videos get black bars in this 4:3 image.
+            src: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
             alt: "image",
             width: "100%",
             height: "auto",

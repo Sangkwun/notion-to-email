@@ -42,7 +42,7 @@ describe("video block", () => {
     "draws a thumbnail for %s URLs",
     (prefix) => {
       const html = render({ type: "external", external: { url: `${prefix}${ID}` } })
-      expect(html).toContain(`src="https://i.ytimg.com/vi/${ID}/maxresdefault.jpg"`)
+      expect(html).toContain(`src="https://i.ytimg.com/vi/${ID}/hqdefault.jpg"`)
       expect(html).not.toContain("warning.png")
     },
   )
