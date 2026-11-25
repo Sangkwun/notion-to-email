@@ -67,6 +67,8 @@ export function renderTodo(
           },
         },
         img({
+          width: isChecked ? 14 : 16,
+          height: isChecked ? 14 : 16,
           style: {
             width: isChecked ? "0.875em" : "1em",
             height: isChecked ? "0.875em" : "1em",

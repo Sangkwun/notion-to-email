@@ -111,6 +111,8 @@ export function renderHeading(
           a(
             { href: toggleLink, style: { textDecoration: "none", color: ColorMap.default } },
             img({
+              width: 11,
+              height: 11,
               style: { padding: "0.5em 0.375em", width: "0.6875em", height: "0.6875em" },
               src: `${baseUrl}/images/triangle.png`,
             }),

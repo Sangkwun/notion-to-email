@@ -55,6 +55,8 @@ export function renderFile(
           },
         },
         img({
+          width: 20,
+          height: 20,
           style: { width: "1.2375em", height: "1.2375em" },
           src: `${baseUrl}/images/file_black.png`,
         }),

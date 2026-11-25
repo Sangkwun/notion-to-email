@@ -41,6 +41,8 @@ export function renderPage(
           },
         },
         img({
+          width: 19,
+          height: 19,
           style: {
             width: "1.2em",
             height: "1.2em",

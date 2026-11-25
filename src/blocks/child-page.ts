@@ -23,6 +23,8 @@ export function renderChildPage(
           block,
         })
       : img({
+          width: 20,
+          height: 20,
           style: { width: "1.2375em", height: "1.2375em" },
           src: `${baseUrl}/images/${block.has_children ? "page.png" : "page-empty.png"}`,
         }),

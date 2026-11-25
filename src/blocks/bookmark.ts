@@ -12,6 +12,8 @@ function renderFavicon(favicon: string, origin: string): string {
     src = origin + (favicon.startsWith("/") ? "" : "/") + favicon
   }
   return img({
+    width: 16,
+    height: 16,
     style: { width: "1em", height: "1em" },
     src,
   })

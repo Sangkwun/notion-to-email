@@ -35,6 +35,8 @@ export function renderIconImg(
     return img({
       src,
       alt: "icon",
+      width: Math.round(externalIconSize),
+      height: Math.round(externalIconSize),
       style: {
         width: `${externalIconSize / 16}em`,
         height: `${externalIconSize / 16}em`,
@@ -63,6 +65,8 @@ export function renderIconImg(
     return img({
       src: customEmoji.custom_emoji.url ?? "",
       alt: customEmoji.custom_emoji.name || "custom emoji",
+      width: Math.round(emojiIconSize),
+      height: Math.round(emojiIconSize),
       style: {
         width: `${emojiIconSize / 16}em`,
         height: `${emojiIconSize / 16}em`,
@@ -82,6 +86,8 @@ export function renderIconImg(
     return img({
       src: imageUrl,
       alt: "image",
+      width: Math.round(fileIconSize),
+      height: Math.round(fileIconSize),
       style: {
         borderRadius: "0.25em",
         objectFit: "cover",

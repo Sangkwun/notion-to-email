@@ -60,6 +60,8 @@ export function renderNotSupported(
           img({
             src: `${baseUrl}/images/${ICON_BY_TYPE[type]}`,
             alt: "Not supported",
+            width: 19,
+            height: 19,
             style: {
               width: "1.2em",
               height: "1.2em",
