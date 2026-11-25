@@ -12,6 +12,7 @@
 // - breadcrumb, template, unsupported: the renderer draws a placeholder for them on purpose.
 // - Files uploaded to Notion: external URLs cover the same block types.
 
+import { pathToFileURL } from "node:url"
 import { Client } from "@notionhq/client"
 
 export const TITLE = "notion-to-email watch reference"
@@ -255,15 +256,18 @@ async function main() {
       children: blocks({ pageId: page.id, childPageId: childPage.id, databaseId: database.id, userId: me.id }),
     })
   } catch (error) {
-    // Leave no half-built page behind
-    await notion.pages.update({ page_id: page.id, in_trash: true })
+    // Leave no half-built page behind, and keep the first error if that fails too
+    await notion.pages.update({ page_id: page.id, in_trash: true }).catch((cleanupError) => {
+      console.error("Could not move the half-built page to trash:", cleanupError)
+    })
     throw error
   }
 
   console.log(page.id)
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// import.meta.url is percent-encoded, so compare URLs, not a URL with a raw path
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
     console.error(error)
     process.exit(1)
