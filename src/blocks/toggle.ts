@@ -52,12 +52,14 @@ export function renderToggle(
     ),
   )
 
+  // A label that holds its own links (text links, page mentions) can't sit inside the toggle's link:
+  // nested <a> is invalid and browsers close the outer link early. The triangle still links to Notion.
+  const label = renderRichTexts(block.toggle.rich_text, Color.Default)
   const contentCell = column(
     { style: { width: "100%" } },
-    a(
-      { href: toggleLink, style: { textDecoration: "none", color: ColorMap.default } },
-      renderRichTexts(block.toggle.rich_text, Color.Default),
-    ),
+    label.includes("<a ")
+      ? label
+      : a({ href: toggleLink, style: { textDecoration: "none", color: ColorMap.default } }, label),
   )
 
   let childrenRow: string | null = null
