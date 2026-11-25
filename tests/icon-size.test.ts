@@ -76,6 +76,10 @@ const results = [
     icon: { type: "file", file: { url: "https://example.com/file-icon.png", expiry_time: "2030-01-01T00:00:00.000Z" } },
   }),
   block("video-1", "video", { type: "external", external: { url: "https://vimeo.com/1" }, caption: [] }),
+  block("embed-1", "embed", { url: "https://codepen.io/pen/1", caption: [] }),
+  block("pdf-1", "pdf", { type: "external", external: { url: "https://example.com/a.pdf" }, caption: [] }),
+  block("audio-1", "audio", { type: "external", external: { url: "https://example.com/a.mp3" }, caption: [] }),
+  block("link-preview-1", "link_preview", { url: "https://github.com/a/b/pull/1" }),
   block("callout-4", "callout", {
     rich_text: [rt("native icon")],
     color: "default",
@@ -133,6 +137,10 @@ describe("fixed-size icons", () => {
       "file-icon.png": 1,
       "light-bulb_yellow.png": 1,
       "playback-play-button_gray.png": 1,
+      "globe_gray.png": 1,
+      "document_gray.png": 1,
+      "headphones_gray.png": 1,
+      "link_gray.png": 1,
     }
     for (const [name, count] of Object.entries(expected)) {
       expect(fixedImgs.filter(({ tag }) => tag.includes(name)), name).toHaveLength(count)

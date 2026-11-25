@@ -19,6 +19,7 @@ import { renderColumnList } from "./column-list"
 import { renderChildPage } from "./child-page"
 import { renderChildDatabase } from "./child-database"
 import { renderVideo } from "./video"
+import { renderEmbed, renderPdf, renderAudio } from "./media-link"
 import { renderFile } from "./file"
 import { renderSyncedBlock } from "./synced-block"
 import { renderLinkToPage } from "./link-to-page"
@@ -107,6 +108,12 @@ export function renderChildrenResults(
         parts.push(renderChildDatabase(block, ctx))
       } else if (block.type === "video") {
         parts.push(renderVideo(block, ctx))
+      } else if (block.type === "embed" || block.type === "link_preview") {
+        parts.push(renderEmbed(block, ctx))
+      } else if (block.type === "pdf") {
+        parts.push(renderPdf(block, ctx))
+      } else if (block.type === "audio") {
+        parts.push(renderAudio(block, ctx))
       } else if (block.type === "file") {
         parts.push(renderFile(block, ctx.assetBaseUrl))
       } else if (block.type === "synced_block") {
